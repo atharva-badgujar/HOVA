@@ -5,8 +5,8 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](pyproject.toml)
 [![PyPI](https://img.shields.io/pypi/v/hova.svg)](https://pypi.org/project/hova/)
-[![Tests](https://github.com/your-handle/hova/actions/workflows/ci.yml/badge.svg)](https://github.com/your-handle/hova/actions)
-[![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b)](https://arxiv.org/abs/XXXX.XXXXX)
+[![Tests](https://github.com/atharva-badgujar/hova/actions/workflows/ci.yml/badge.svg)](https://github.com/atharva-badgujar/hova/actions)
+
 
 ---
 
