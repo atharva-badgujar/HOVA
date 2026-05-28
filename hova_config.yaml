@@ -1,0 +1,63 @@
+# HOVA default configuration
+# Human Origin Verification Architecture v0.1.0
+#
+# Copy this file to your project root and adjust values to fit your use case.
+# Load with: pipeline = HOVAPipeline.from_config("hova_config.yaml")
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Layer 1: Cognitive Entropy Signature (CES)
+# Detects the human/AI entropy ratio in individual documents.
+# ──────────────────────────────────────────────────────────────────────────────
+ces:
+  window_size: 32        # tokens per local entropy window
+  alpha: 5.0             # sigmoid steepness: weight = sigmoid(alpha*(CES-tau))
+  tau: 1.0               # CES threshold midpoint (CES>1.0 = upweighted)
+  discard_below: 0.7     # documents below this CES are discarded entirely
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Layer 2: Temporal Mutation Chain (TMC)
+# Scores per-author longitudinal authenticity.
+# ──────────────────────────────────────────────────────────────────────────────
+tmc:
+  n_topics: 20                    # LDA topics for topic-jump dimension
+  beta: 4.0                       # sigmoid steepness for weight_TMC
+  min_documents_per_author: 3     # minimum docs before computing TMC score
+  lda_passes: 5                   # LDA training passes
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Layer 3: Anchor Node Training (ANT)
+# Frozen reference model that penalises divergence from human representations.
+# Requires: pip install hova[training]
+# ──────────────────────────────────────────────────────────────────────────────
+ant:
+  anchor_model_path: null   # set to a HuggingFace model ID or local path
+                            # e.g. "gpt2" or "./my_anchor_model"
+  lambda_ant: 0.1           # weight of ANT divergence penalty in total loss
+  layers_to_match:          # which hidden layers to compare (negative = from end)
+    - -1
+    - -2
+    - -3
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Layer 4: Disagreement Preservation Sampling (DPS)
+# Enforces corpus diversity via the Corpus Health Tensor (CHT).
+# ──────────────────────────────────────────────────────────────────────────────
+dps:
+  min_opinion_divergence: 0.35   # Ω_op ≥ 0.35 (variance of opinion vectors)
+  min_emotional_entropy: 1.5     # Ω_emo ≥ 1.5 bits (sentiment class entropy)
+  min_lexical_diversity: 0.40    # Ω_lex ≥ 0.40 (mean pairwise TF-IDF distance)
+  min_cultural_entropy: 1.2      # Ω_cult ≥ 1.2 bits (language-region entropy)
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Layer 5: Collapse Early Warning System (CEWS)
+# Monitors CRI = w1·CES_drift + w2·CHT_grad + w3·AnchorDiv
+# ──────────────────────────────────────────────────────────────────────────────
+cews:
+  checkpoint_every: 500    # evaluate CRI every N training steps
+  red_threshold: 0.75      # CRI ≥ red  → auto-pause + mandatory audit
+  orange_threshold: 0.60   # CRI ≥ orange → alert human operator
+  yellow_threshold: 0.40   # CRI ≥ yellow → increase monitoring frequency
+  w_ces: 0.35              # weight of CES drift component
+  w_cht: 0.35              # weight of CHT gradient component
+  w_anc: 0.30              # weight of anchor divergence component
+  history_window: 10       # checkpoints used for min-max normalisation

@@ -1,0 +1,120 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hova"
+version = "0.1.0"
+description = "Human Origin Verification Architecture — preventing recursive model collapse in AI training pipelines"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [
+    { name = "HOVA Contributors" },
+]
+keywords = [
+    "ai-safety", "model-collapse", "training-data",
+    "synthetic-data", "data-quality", "nlp",
+    "human-origin", "entropy", "corpus-health",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+# Core dependencies (no GPU required)
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "pyyaml>=6.0",
+    "textblob>=0.17",
+    "langdetect>=1.0.9",
+]
+
+[project.optional-dependencies]
+# NLP extras (better TMC: POS tagging, topic modelling)
+nlp = [
+    "spacy>=3.6",
+    "gensim>=4.3",
+]
+# Deep learning extras (ANT loss term)
+training = [
+    "torch>=2.0",
+    "transformers>=4.36",
+    "sentence-transformers>=2.2",
+]
+# Full installation (everything)
+full = [
+    "hova[nlp]",
+    "hova[training]",
+]
+# Development extras
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "mypy>=1.5",
+    "hova[nlp]",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-handle/hova"
+Documentation = "https://github.com/your-handle/hova#readme"
+Repository = "https://github.com/your-handle/hova"
+"Bug Tracker" = "https://github.com/your-handle/hova/issues"
+"Research Paper" = "https://arxiv.org/abs/XXXX.XXXXX"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hova*"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Pytest configuration
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ruff linter configuration
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in default arguments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F401", "F811"]
+"examples/*" = ["F401"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# MyPy type checking
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
